@@ -36,7 +36,7 @@ A secure web application with Role-Based Access Control (RBAC) that allows Manag
 
 1. Clone the repository:
 ```bash
-git clone <repository-url>
+git clone https://github.com/vipinjarwalpython/user_management_system.git
 cd user-task-management
 ```
 
