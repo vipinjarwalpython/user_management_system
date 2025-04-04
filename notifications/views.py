@@ -1,3 +1,7 @@
+"""
+Notification views for retrieving user-specific notifications and marking them as read.
+"""
+
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
@@ -7,10 +11,17 @@ from .serializers import NotificationSerializer
 
 
 class NotificationListView(APIView):
+    """
+    View to retrieve a list of notifications for the authenticated user.
+    """
+
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        # Get notifications for the current user
+        """
+        Get a list of notifications for the current user,
+        sorted by most recent first.
+        """
         notifications = Notification.objects.filter(recipient=request.user).order_by(
             "-created_at"
         )
@@ -19,9 +30,17 @@ class NotificationListView(APIView):
 
 
 class MarkNotificationReadView(APIView):
+    """
+    View to mark a specific notification as read for the authenticated user.
+    """
+
     permission_classes = [IsAuthenticated]
 
     def post(self, request, notification_id):
+        """
+        Mark a notification as read.
+        Only the recipient of the notification can perform this action.
+        """
         try:
             notification = Notification.objects.get(
                 id=notification_id, recipient=request.user
@@ -33,5 +52,3 @@ class MarkNotificationReadView(APIView):
             return Response(
                 {"error": "Notification not found"}, status=status.HTTP_404_NOT_FOUND
             )
-
-

@@ -1,3 +1,8 @@
+"""
+This module provides API views for user registration, login, logout, user listing,
+user detail management, and user activation/deactivation.
+"""
+
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -14,9 +19,16 @@ User = get_user_model()
 
 
 class RegisterView(APIView):
+    """
+    API view to handle user registration.
+    Allows any user to register and returns access and refresh tokens on success.
+    """
     permission_classes = [AllowAny]
 
     def post(self, request):
+        """
+        Register a new user with the provided data.
+        """
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()
@@ -35,9 +47,17 @@ class RegisterView(APIView):
 
 
 class LoginView(APIView):
+    """
+    API view to handle user login.
+    Verifies user credentials and returns JWT tokens on success.
+    """
     permission_classes = [AllowAny]
 
     def post(self, request):
+        """
+        Authenticate user with email and password.
+        Returns access and refresh tokens on valid login.
+        """
         email = request.data.get("email")
         password = request.data.get("password")
 
@@ -77,9 +97,16 @@ class LoginView(APIView):
 
 
 class LogoutView(APIView):
+    """
+    API view to handle user logout.
+    Requires authentication and blacklists the refresh token.
+    """
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
+        """
+        Logout the user by blacklisting the provided refresh token.
+        """
         try:
             refresh_token = request.data.get("refresh")
             token = RefreshToken(refresh_token)
@@ -93,10 +120,16 @@ class LogoutView(APIView):
 
 
 class UserListCreateView(APIView):
+    """
+    API view for listing and creating users.
+    Admins can view/create all users; Managers can only view/create regular users.
+    """
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        # Only Admin can see all users, Manager can see regular users
+        """
+        List users based on the role of the requesting user.
+        """
         if request.user.role == "ADMIN":
             users = User.objects.all()
         elif request.user.role == "MANAGER":
@@ -111,7 +144,10 @@ class UserListCreateView(APIView):
         return Response(serializer.data)
 
     def post(self, request):
-        # Only Admin can create any type of user, Manager can create regular users
+        """
+        Create a new user.
+        Admins can create any user; Managers can only create regular users.
+        """
         if request.user.role == "ADMIN":
             serializer = UserSerializer(data=request.data)
         elif request.user.role == "MANAGER" and request.data.get("role") == "USER":
@@ -129,12 +165,18 @@ class UserListCreateView(APIView):
 
 
 class UserDetailView(APIView):
+    """
+    API view to retrieve, update, or delete a specific user.
+    Access is restricted based on the requesting user's role.
+    """
     permission_classes = [IsAuthenticated]
 
     def get_object(self, user_id):
+        """
+        Retrieve a user object based on access permissions.
+        """
         try:
             user = User.objects.get(id=user_id)
-            # Admin can access any user, Manager can access only regular users, Users can access only themselves
             if self.request.user.role == "ADMIN":
                 return user
             elif self.request.user.role == "MANAGER" and user.role == "USER":
@@ -146,6 +188,9 @@ class UserDetailView(APIView):
             return None
 
     def get(self, request, user_id):
+        """
+        Retrieve details of a specific user.
+        """
         user = self.get_object(user_id)
         if not user:
             return Response(
@@ -157,6 +202,10 @@ class UserDetailView(APIView):
         return Response(serializer.data)
 
     def put(self, request, user_id):
+        """
+        Update user details.
+        Only Admins can update roles; others can update basic info.
+        """
         user = self.get_object(user_id)
         if not user:
             return Response(
@@ -164,7 +213,6 @@ class UserDetailView(APIView):
                 status=status.HTTP_404_NOT_FOUND,
             )
 
-        # Only Admin can change roles, others can update other fields
         if (
             request.user.role != "ADMIN"
             and "role" in request.data
@@ -182,6 +230,10 @@ class UserDetailView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, user_id):
+        """
+        Delete a user.
+        Only Admins are allowed to perform this action.
+        """
         user = self.get_object(user_id)
         if not user:
             return Response(
@@ -189,7 +241,6 @@ class UserDetailView(APIView):
                 status=status.HTTP_404_NOT_FOUND,
             )
 
-        # Only Admin can delete users
         if request.user.role != "ADMIN":
             return Response(
                 {"error": "Only Admin can delete users"},
@@ -201,10 +252,17 @@ class UserDetailView(APIView):
 
 
 class UserActivationView(APIView):
+    """
+    API view to activate or deactivate a user.
+    Only Admins and Managers can perform this action.
+    """
     permission_classes = [IsAuthenticated]
 
     def post(self, request, user_id):
-        # Only Admin and Manager can activate/deactivate users
+        """
+        Activate or deactivate a user.
+        Managers can only modify regular users.
+        """
         if request.user.role not in ["ADMIN", "MANAGER"]:
             return Response(
                 {"error": "Not authorized to change user status"},
@@ -214,7 +272,6 @@ class UserActivationView(APIView):
         try:
             user = User.objects.get(id=user_id)
 
-            # Manager can only activate/deactivate regular users
             if request.user.role == "MANAGER" and user.role != "USER":
                 return Response(
                     {"error": "Managers can only modify regular user status"},
@@ -226,7 +283,6 @@ class UserActivationView(APIView):
             )
 
             if serializer.is_valid():
-                # Reset failed tasks count if reactivating
                 if "is_active" in request.data and request.data["is_active"] is True:
                     serializer.validated_data["failed_tasks"] = 0
 

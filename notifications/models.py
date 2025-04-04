@@ -3,6 +3,10 @@ from django.conf import settings
 
 
 class Notification(models.Model):
+    """
+    Represents a notification sent to a user.
+    Used for alerting users about task status, user actions, etc.
+    """
     NOTIFICATION_TYPES = (
         ("TASK_OVERDUE", "Task Overdue"),
         ("USER_DEACTIVATED", "User Deactivated"),

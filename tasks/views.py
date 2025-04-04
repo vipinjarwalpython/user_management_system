@@ -1,3 +1,8 @@
+"""
+Task management views with role-based access control for listing, creating, 
+updating, deleting, and managing task statuses like overdue and failed.
+"""
+
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
@@ -10,24 +15,34 @@ from users.models import User
 
 
 class TaskListCreateView(APIView):
+    """
+    View to list all tasks based on user role and create new tasks.
+    """
+
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
+        """
+        Retrieve tasks based on the user's role:
+        - Admin: all tasks
+        - Manager: tasks assigned by them
+        - User: tasks assigned to them
+        """
         if request.user.role == "ADMIN":
-            # Admin can see all tasks
             tasks = Task.objects.all()
         elif request.user.role == "MANAGER":
-            # Manager can see tasks they assigned
             tasks = Task.objects.filter(assigned_by=request.user)
         else:
-            # Regular users can see only their tasks
             tasks = Task.objects.filter(assigned_to=request.user)
 
         serializer = TaskSerializer(tasks, many=True)
         return Response(serializer.data)
 
     def post(self, request):
-        # Only Admin and Manager can create tasks
+        """
+        Create a new task.
+        Only Admin and Manager roles are allowed to assign tasks.
+        """
         if request.user.role not in ["ADMIN", "MANAGER"]:
             return Response(
                 {"error": "Only Admin and Manager can assign tasks"},
@@ -42,12 +57,18 @@ class TaskListCreateView(APIView):
 
 
 class TaskDetailView(APIView):
+    """
+    View to retrieve, update, or delete a specific task based on the user's role.
+    """
+
     permission_classes = [IsAuthenticated]
 
     def get_object(self, task_id):
+        """
+        Retrieve a task by ID with permission checks based on user role.
+        """
         try:
             task = Task.objects.get(id=task_id)
-            # Check permissions based on role
             if self.request.user.role == "ADMIN":
                 return task
             elif (
@@ -65,6 +86,9 @@ class TaskDetailView(APIView):
             return None
 
     def get(self, request, task_id):
+        """
+        Retrieve task details if user has permission.
+        """
         task = self.get_object(task_id)
         if not task:
             return Response(
@@ -76,6 +100,11 @@ class TaskDetailView(APIView):
         return Response(serializer.data)
 
     def put(self, request, task_id):
+        """
+        Update task details:
+        - Admin or Manager who created the task can update all fields.
+        - Users can only update the task status.
+        """
         task = self.get_object(task_id)
         if not task:
             return Response(
@@ -83,7 +112,6 @@ class TaskDetailView(APIView):
                 status=status.HTTP_404_NOT_FOUND,
             )
 
-        # Only Admin and Manager who assigned the task can update all fields
         if request.user.role in ["ADMIN", "MANAGER"] and (
             request.user.role == "ADMIN" or task.assigned_by == request.user
         ):
@@ -91,7 +119,6 @@ class TaskDetailView(APIView):
                 task, data=request.data, context={"request": request}, partial=True
             )
         else:
-            # Regular users can only update status
             if "status" not in request.data or len(request.data) > 1:
                 return Response(
                     {"error": "You can only update task status"},
@@ -107,6 +134,10 @@ class TaskDetailView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, task_id):
+        """
+        Delete a task:
+        - Admin or Manager who assigned the task can delete it.
+        """
         task = self.get_object(task_id)
         if not task:
             return Response(
@@ -114,7 +145,6 @@ class TaskDetailView(APIView):
                 status=status.HTTP_404_NOT_FOUND,
             )
 
-        # Only Admin and Manager who assigned the task can delete it
         if request.user.role == "ADMIN" or (
             request.user.role == "MANAGER" and task.assigned_by == request.user
         ):
@@ -128,10 +158,18 @@ class TaskDetailView(APIView):
 
 
 class CheckOverdueTasksView(APIView):
+    """
+    View to check overdue tasks based on deadline and current time.
+    """
+
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        # Only Admin and Managers can check overdue tasks
+        """
+        Retrieve tasks that are overdue:
+        - Admin: all overdue tasks
+        - Manager: tasks they assigned that are overdue
+        """
         if request.user.role not in ["ADMIN", "MANAGER"]:
             return Response(
                 {"error": "Not authorized"}, status=status.HTTP_403_FORBIDDEN
@@ -140,12 +178,10 @@ class CheckOverdueTasksView(APIView):
         now = timezone.now()
 
         if request.user.role == "ADMIN":
-            # Admin can see all overdue tasks
             overdue_tasks = Task.objects.filter(
                 deadline__lt=now, status__in=["PENDING", "IN_PROGRESS"]
             )
         else:
-            # Manager can see overdue tasks they assigned
             overdue_tasks = Task.objects.filter(
                 deadline__lt=now,
                 status__in=["PENDING", "IN_PROGRESS"],
@@ -157,10 +193,19 @@ class CheckOverdueTasksView(APIView):
 
 
 class MarkTaskFailedView(APIView):
+    """
+    View to manually mark a task as failed and auto-deactivate user if needed.
+    """
+
     permission_classes = [IsAuthenticated]
 
     def post(self, request, task_id):
-        # Only Admin and Managers can mark tasks as failed
+        """
+        Mark a task as failed:
+        - Only Admin or Manager who assigned it can perform the action.
+        - Increments user's failed task count.
+        - Auto-deactivates the user after 5 failed tasks and sends a notification.
+        """
         if request.user.role not in ["ADMIN", "MANAGER"]:
             return Response(
                 {"error": "Not authorized"}, status=status.HTTP_403_FORBIDDEN
@@ -169,7 +214,6 @@ class MarkTaskFailedView(APIView):
         try:
             task = Task.objects.get(id=task_id)
 
-            # Manager can only modify tasks they assigned
             if request.user.role == "MANAGER" and task.assigned_by != request.user:
                 return Response(
                     {"error": "You can only modify tasks you assigned"},
@@ -182,19 +226,15 @@ class MarkTaskFailedView(APIView):
                     status=status.HTTP_400_BAD_REQUEST,
                 )
 
-            # Mark task as failed
             task.status = "FAILED"
             task.save()
 
-            # Increment failed tasks count for the user
             user = task.assigned_to
             user.failed_tasks += 1
 
-            # Auto-deactivate user if they have 5 or more failed tasks
             if user.failed_tasks >= 5:
                 user.is_active = False
                 from notifications.utils import send_deactivation_notification
-
                 send_deactivation_notification(user, task.assigned_by)
 
             user.save()
