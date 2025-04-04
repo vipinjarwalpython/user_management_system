@@ -1,0 +1,675 @@
+{
+	"info": {
+		"_postman_id": "3766e47d-7987-4123-9494-f43d2f94738f",
+		"name": "User Management System",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "31607840"
+	},
+	"item": [
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "User Register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"user@example.com\",\r\n  \"first_name\": \"John\",\r\n  \"last_name\": \"Doe\",\r\n  \"password\": \"complex-password\",\r\n  \"role\": \"ADMIN\"  // Can be ADMIN, MANAGER, or USER\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/users/register/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"register",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"newuser@example.com\",\r\n  \"password\": \"complex-password\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/users/login/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"login",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User Logout",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQzNzExNjY1LCJpYXQiOjE3NDM3MDgwNjUsImp0aSI6IjYxNmNjMDk4MjljZDQxMWNhZjQ0YmY3M2MwODNlMDY3IiwidXNlcl9pZCI6NH0.vn_OM7XXSwixUBMWwszQo6-d6t8UE_3Q5EWMBZ4YquU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"refresh\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc0Mzc5NDQ2NSwiaWF0IjoxNzQzNzA4MDY1LCJqdGkiOiJhM2I4MDkzYzYzZjU0ZjU4YmE5YmNkMzdhYjJkZWE2OCIsInVzZXJfaWQiOjR9.cksCpjc8LNPBzZvETmTJkU3uxXl1rHHgP9OG3iRt1Z4\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/users/logout/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"logout",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Users",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQzNzExNjY1LCJpYXQiOjE3NDM3MDgwNjUsImp0aSI6IjYxNmNjMDk4MjljZDQxMWNhZjQ0YmY3M2MwODNlMDY3IiwidXNlcl9pZCI6NH0.vn_OM7XXSwixUBMWwszQo6-d6t8UE_3Q5EWMBZ4YquU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"newuser@example.com\",\r\n  \"first_name\": \"Jane\",\r\n  \"last_name\": \"Smith\",\r\n  \"password\": \"complex-password\",\r\n  \"role\": \"USER\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/users/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get Users",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQzNzEwNjI2LCJpYXQiOjE3NDM3MDcwMjYsImp0aSI6IjMzODJkMWYyNGU3NjQ2N2E5MTIyNmRiY2E0NzJjZDUxIiwidXNlcl9pZCI6Mn0.cPGGycOWw7n7szSYO9Q7gr3Uce5lQnxsX-Zuz2Dh_c4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/users/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Users update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQzNzEwNjI2LCJpYXQiOjE3NDM3MDcwMjYsImp0aSI6IjMzODJkMWYyNGU3NjQ2N2E5MTIyNmRiY2E0NzJjZDUxIiwidXNlcl9pZCI6Mn0.cPGGycOWw7n7szSYO9Q7gr3Uce5lQnxsX-Zuz2Dh_c4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"newuser@example.com\",\r\n  \"first_name\": \"demo\",\r\n  \"last_name\": \"Smith\",\r\n  \"password\": \"complex-password\",\r\n  \"role\": \"USER\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/users/3/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"3",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Users delete",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQzNzEwNjI2LCJpYXQiOjE3NDM3MDcwMjYsImp0aSI6IjMzODJkMWYyNGU3NjQ2N2E5MTIyNmRiY2E0NzJjZDUxIiwidXNlcl9pZCI6Mn0.cPGGycOWw7n7szSYO9Q7gr3Uce5lQnxsX-Zuz2Dh_c4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/users/3/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"3",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User Activation",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQzNzEwNjI2LCJpYXQiOjE3NDM3MDcwMjYsImp0aSI6IjMzODJkMWYyNGU3NjQ2N2E5MTIyNmRiY2E0NzJjZDUxIiwidXNlcl9pZCI6Mn0.cPGGycOWw7n7szSYO9Q7gr3Uce5lQnxsX-Zuz2Dh_c4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"is_active\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}} /api/users/3/activation/",
+							"host": [
+								"{{base_url}} "
+							],
+							"path": [
+								"api",
+								"users",
+								"3",
+								"activation",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User Deactivation",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQzNzEwNjI2LCJpYXQiOjE3NDM3MDcwMjYsImp0aSI6IjMzODJkMWYyNGU3NjQ2N2E5MTIyNmRiY2E0NzJjZDUxIiwidXNlcl9pZCI6Mn0.cPGGycOWw7n7szSYO9Q7gr3Uce5lQnxsX-Zuz2Dh_c4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"is_active\": false\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}} /api/users/4/activation/",
+							"host": [
+								"{{base_url}} "
+							],
+							"path": [
+								"api",
+								"users",
+								"4",
+								"activation",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Task",
+			"item": [
+				{
+					"name": "Get Tasks",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQzNzEwNjI2LCJpYXQiOjE3NDM3MDcwMjYsImp0aSI6IjMzODJkMWYyNGU3NjQ2N2E5MTIyNmRiY2E0NzJjZDUxIiwidXNlcl9pZCI6Mn0.cPGGycOWw7n7szSYO9Q7gr3Uce5lQnxsX-Zuz2Dh_c4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/tasks/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"tasks",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create task",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQzNzEyMDUzLCJpYXQiOjE3NDM3MDg0NTMsImp0aSI6IjhjYWM2MmRkMWI2OTQ3MjRhMWZlODc3ZWRmNmY1M2QxIiwidXNlcl9pZCI6Mn0.fGZ5K3BzncVRwiO6gjalj9Awb5C9MGd0wBkHRRW_qpc",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"title\": \"Complete project report\",\r\n  \"description\": \"Write a detailed report on the Q1 results\",\r\n  \"assigned_to\": 4,  \r\n  \"deadline\": \"2025-04-10T23:59:59Z\",\r\n  \"status\": \"PENDING\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/tasks/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"tasks",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get task",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQzNzEwNjI2LCJpYXQiOjE3NDM3MDcwMjYsImp0aSI6IjMzODJkMWYyNGU3NjQ2N2E5MTIyNmRiY2E0NzJjZDUxIiwidXNlcl9pZCI6Mn0.cPGGycOWw7n7szSYO9Q7gr3Uce5lQnxsX-Zuz2Dh_c4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/tasks/{task_id}/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"tasks",
+								"{task_id}",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update task",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQzNzEwNjI2LCJpYXQiOjE3NDM3MDcwMjYsImp0aSI6IjMzODJkMWYyNGU3NjQ2N2E5MTIyNmRiY2E0NzJjZDUxIiwidXNlcl9pZCI6Mn0.cPGGycOWw7n7szSYO9Q7gr3Uce5lQnxsX-Zuz2Dh_c4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"title\": \"Complete project report\",\r\n  \"description\": \"Write a detailed report on the Q1 results updated\",\r\n  \"assigned_to\": 4,  \r\n  \"deadline\": \"2025-04-10T23:59:59Z\",\r\n  \"status\": \"PENDING\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/tasks/1/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"tasks",
+								"1",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Del task",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQzNzEwNjI2LCJpYXQiOjE3NDM3MDcwMjYsImp0aSI6IjMzODJkMWYyNGU3NjQ2N2E5MTIyNmRiY2E0NzJjZDUxIiwidXNlcl9pZCI6Mn0.cPGGycOWw7n7szSYO9Q7gr3Uce5lQnxsX-Zuz2Dh_c4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/tasks/1/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"tasks",
+								"1",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Check Overdue Task",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQzNzEwNjI2LCJpYXQiOjE3NDM3MDcwMjYsImp0aSI6IjMzODJkMWYyNGU3NjQ2N2E5MTIyNmRiY2E0NzJjZDUxIiwidXNlcl9pZCI6Mn0.cPGGycOWw7n7szSYO9Q7gr3Uce5lQnxsX-Zuz2Dh_c4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/tasks/overdue/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"tasks",
+								"overdue",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Task Failed",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQzNzEyMDUzLCJpYXQiOjE3NDM3MDg0NTMsImp0aSI6IjhjYWM2MmRkMWI2OTQ3MjRhMWZlODc3ZWRmNmY1M2QxIiwidXNlcl9pZCI6Mn0.fGZ5K3BzncVRwiO6gjalj9Awb5C9MGd0wBkHRRW_qpc",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/tasks/2/fail/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"tasks",
+								"2",
+								"fail",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Notification",
+			"item": [
+				{
+					"name": "List Notifications",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQzNzEwNjI2LCJpYXQiOjE3NDM3MDcwMjYsImp0aSI6IjMzODJkMWYyNGU3NjQ2N2E5MTIyNmRiY2E0NzJjZDUxIiwidXNlcl9pZCI6Mn0.cPGGycOWw7n7szSYO9Q7gr3Uce5lQnxsX-Zuz2Dh_c4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/notifications/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"notifications",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Mark Notifications",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQzNzEwNjI2LCJpYXQiOjE3NDM3MDcwMjYsImp0aSI6IjMzODJkMWYyNGU3NjQ2N2E5MTIyNmRiY2E0NzJjZDUxIiwidXNlcl9pZCI6Mn0.cPGGycOWw7n7szSYO9Q7gr3Uce5lQnxsX-Zuz2Dh_c4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/notifications/1/read/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"notifications",
+								"1",
+								"read",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://127.0.0.1:8000",
+			"type": "string"
+		}
+	]
+}

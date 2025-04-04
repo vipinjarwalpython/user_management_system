@@ -1,0 +1,12 @@
+# Database Credentials
+DB_NAME=user_management_db
+DB_USER=user_admin
+DB_PASSWORD=12345
+DB_HOST=localhost
+DB_PORT=5432
+
+# Django Secret Key
+SECRET_KEY='django-insecure-=d1k4nn#=xe%oox5d^(bu_ia*qly4$_rs0#sb9vfdie1vgkx%^'
+
+# Debug Mode (True for development, False for production)
+DEBUG=True
